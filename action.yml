@@ -131,22 +131,18 @@ runs:
         sudo apt-get -y update
         sudo apt-get -y --allow-downgrades dist-upgrade || :
     
-    - name: Caching bootstrap
-      if: steps.information.outputs.procursus_bootstrapped != 'true' && inputs.cache == 'true' 
-      shell: bash
-      run: |
-        sudo mkdir -p ${{ inputs.cache-path }}
-        sudo rsync -alHh --inplace /opt/procursus ${{ inputs.cache-path }}
-        sudo rm -rf ${{ inputs.cache-path }}/procursus/var/cache/apt/archives/partial \
-          ${{ inputs.cache-path }}/procursus/var/lib/apt/lists/partial \
-          ${{ inputs.cache-path }}/procursus/Library/dpkg/triggers/Lock
-
     - name: Install packages
       shell: bash
       if: inputs.packages
       run: |
         sudo apt-get install -y ${{ inputs.packages }}
         
+  post: |
+    sudo mkdir -p ${{ inputs.cache-path }}
+    sudo rsync -alHh --inplace /opt/procursus ${{ inputs.cache-path }}
+    sudo rm -rf ${{ inputs.cache-path }}/procursus/var/cache/apt/archives/partial \
+    ${{ inputs.cache-path }}/procursus/var/lib/apt/lists/partial \
+    ${{ inputs.cache-path }}/procursus/Library/dpkg/triggers/Lock
 
 branding:
   icon: download-cloud
