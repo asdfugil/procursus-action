@@ -137,12 +137,16 @@ runs:
       run: |
         sudo apt-get install -y ${{ inputs.packages }}
         
-  post: |
-    sudo mkdir -p ${{ inputs.cache-path }}
-    sudo rsync -alHh --inplace /opt/procursus ${{ inputs.cache-path }}
-    sudo rm -rf ${{ inputs.cache-path }}/procursus/var/cache/apt/archives/partial \
-    ${{ inputs.cache-path }}/procursus/var/lib/apt/lists/partial \
-    ${{ inputs.cache-path }}/procursus/Library/dpkg/triggers/Lock
+    - uses: webiny/action-post-run@2.0.1
+      name: 'Cache bootstrap'
+      if: inputs.cache
+      with:
+        run: |
+          sudo mkdir -p ${{ inputs.cache-path }}
+          sudo rsync -alHh --inplace /opt/procursus ${{ inputs.cache-path }}
+          sudo rm -rf ${{ inputs.cache-path }}/procursus/var/cache/apt/archives/partial \
+          ${{ inputs.cache-path }}/procursus/var/lib/apt/lists/partial \
+          ${{ inputs.cache-path }}/procursus/Library/dpkg/triggers/Lock
 
 branding:
   icon: download-cloud
