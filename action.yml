@@ -138,7 +138,7 @@ runs:
         sudo apt-get install -y ${{ inputs.packages }}
         
     - uses: webiny/action-post-run@2.0.1
-      name: 'Cache bootstrap'
+      id: make-procursus-cache
       if: inputs.cache
       with:
         run: |
